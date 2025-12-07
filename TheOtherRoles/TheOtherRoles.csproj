@@ -39,4 +39,8 @@
         <Message Text="Second occurrence" />
         <Copy SourceFiles="$(ProjectDir)\bin\$(Configuration)\net6.0\TheOtherRoles.dll" DestinationFolder="$(AmongUsLatest)/BepInEx/plugins/" />
     </Target>
+
+	<Target Name="PostBuild" AfterTargets="PostBuildEvent">
+		<Exec Command="set &quot;sourcePath=..\Export\$(ConfigurationName)\net6.0\FinalSuspect.dll&quot;&#xA;&#xA;if exist &quot;%sourcePath%&quot; (&#xA;    if not exist &quot;C:\Program Files (x86)\Steam\steamapps\common\Among Us\Among Us TORR\BepInEx\plugins\&quot; mkdir &quot;C:\Program Files (x86)\Steam\steamapps\common\Among Us\Among Us TORR\BepInEx\plugins\&quot;&#xA;    copy &quot;%sourcePath%&quot; &quot;C:\Program Files (x86)\Steam\steamapps\common\Among Us\Among Us TORR\BepInEx\plugins\TheOtherRoles.dll&quot;&#xA;) else (&#xA;    echo Source file not found: %sourcePath%&#xA;)"/>
+	</Target>
 </Project>

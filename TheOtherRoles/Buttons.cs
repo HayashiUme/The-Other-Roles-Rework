@@ -1403,10 +1403,7 @@ internal static class HudManagerStartPatch
             },
             () =>
             {
-                if (JackalSidekickPropTip != null)
-                {
-                    JackalSidekickPropTip.ProptipText = "点击创建跟班";
-                }
+                jackalSidekickButton.actionButtonGameObject.AddComponent<Prop.Proptip>().ProptipText = "点击创建跟班";
                 return Jackal.canCreateSidekick && Jackal.currentTarget != null && PlayerControl.LocalPlayer.CanMove;
             },
             () => { jackalSidekickButton.Timer = jackalSidekickButton.MaxTimer; },
@@ -1416,7 +1413,6 @@ internal static class HudManagerStartPatch
             KeyCode.F,
             buttonText: "jackalSidekick"
         );
-        JackalSidekickPropTip = jackalSidekickButton.actionButtonGameObject.AddComponent<Prop.Proptip>();
 
         // Jackal Kill
         jackalKillButton = new CustomButton(

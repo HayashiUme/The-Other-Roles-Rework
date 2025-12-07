@@ -800,7 +800,7 @@ public static class RPCProcedure
     public static void reloadCooldowns()
     {
         PeaceDove.reloadMaxNum--;
-        foreach(PlayerControl p in PlayerControl.AllPlayerControls)
+        foreach(PlayerControl p in PlayerControl.AllPlayerControls.ToArray())
         {
             if(p.Data.Role.IsImpostor || p.PlayerId == Jackal.jackal.PlayerId || p.PlayerId == Thief.thief.PlayerId)
             {

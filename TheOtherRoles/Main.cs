@@ -60,7 +60,6 @@ public class TheOtherRolesPlugin : BasePlugin
     public static ConfigEntry<bool> ShowRoleSummary { get; set; }
     public static ConfigEntry<bool> InsteadDarkMode { get; set; }
     public static ConfigEntry<bool> EnableSoundEffects { get; set; }
-    public static ConfigEntry<bool> EnableHorseMode { get; set; }
     public static ConfigEntry<bool> ShowChatNotifications { get; set; }
     public static ConfigEntry<string> Ip { get; set; }
     public static ConfigEntry<ushort> Port { get; set; }
@@ -71,28 +70,27 @@ public class TheOtherRolesPlugin : BasePlugin
     // file="RegionInstallPlugin.cs" company="miniduikboot">
     public static void UpdateRegions()
     {
-        var serverManager = FastDestroyableSingleton<ServerManager>.Instance;
-        var regions = new[]
+        ServerManager serverManager = FastDestroyableSingleton<ServerManager>.Instance;
+        var regions = new IRegionInfo[]
         {
-            new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, Ip.Value,
-                    new Il2CppReferenceArray<ServerInfo>(new ServerInfo[1]
-                        { new("Custom", Ip.Value, Port.Value, false) }))
-                .CastFast<IRegionInfo>()
+                new StaticHttpRegionInfo("<color=#76BAF6>Niko233 Server [China,Asis]</color>", StringNames.NoTranslation, "https://aucn2.niko233.me", new Il2CppReferenceArray<ServerInfo>(new ServerInfo[1] { new ServerInfo("Niko233(AS_CN)", "https://aucn2.niko233.me", 443, false) })).CastFast<IRegionInfo>(),
+                new StaticHttpRegionInfo("<color=#D2A2EE>Niko233 Server [USA,NorthAmerica]</color>", StringNames.NoTranslation, "https://au-us2.niko233.me", new Il2CppReferenceArray<ServerInfo>(new ServerInfo[1] { new ServerInfo("Niko233(NA_US2)", "https://au-us2.niko233.me", 443, false) })).CastFast<IRegionInfo>(),
+                new StaticHttpRegionInfo("<color=#49F0FC>TORR Server</color> <color=#8732FF>[SuQian,China]</color>", StringNames.NoTranslation, "https://newplayer.fangkuai.fun", new Il2CppReferenceArray<ServerInfo>(new ServerInfo[1] { new ServerInfo("<color=#49F0FC>方块服</color> <color=#8732FF>[宿迁]</color>", "http://sq.fangkuai.fun", 22020, false) })).CastFast<IRegionInfo>(),
+                new StaticHttpRegionInfo("<color=#49F0FC>FangKuai Server</color> <color=#00bfff>[HongKong,China]</color>", StringNames.NoTranslation, "https://newauhk.fangkuai.fun", new Il2CppReferenceArray<ServerInfo>(new ServerInfo[1] { new ServerInfo("方块服 [宿迁]", "https://player.fangkuai.fun", 443, false) })).CastFast<IRegionInfo>(),
         };
-
-        var currentRegion = serverManager.CurrentRegion;
+        IRegionInfo currentRegion = serverManager.CurrentRegion;
         Logger.LogInfo($"Adding {regions.Length} regions");
-        foreach (var region in regions)
+        foreach (IRegionInfo region in regions)
+        {
             if (region == null)
-            {
                 Logger.LogError("Could not add region");
-            }
             else
             {
                 if (currentRegion != null && region.Name.Equals(currentRegion.Name, StringComparison.OrdinalIgnoreCase))
                     currentRegion = region;
                 serverManager.AddOrUpdateRegion(region);
             }
+        }
 
         // AU remembers the previous region that was set, so we need to restore it
         if (currentRegion != null)
@@ -115,7 +113,6 @@ public class TheOtherRolesPlugin : BasePlugin
         ShowRoleSummary = Config.Bind("Custom", "Show Role Summary", true);
         InsteadDarkMode = Config.Bind("Custom", "Instead Dark Mod Of Role Color", false);
         EnableSoundEffects = Config.Bind("Custom", "Enable Sound Effects", true);
-        EnableHorseMode = Config.Bind("Custom", "Enable Horse Mode", false);
         ShowPopUpVersion = Config.Bind("Custom", "Show PopUp", "0");
         ShowChatNotifications = Config.Bind("Custom", "Show Chat Notifications", true);
         ShowFPS = Config.Bind("Custom", "Show FPS", true);

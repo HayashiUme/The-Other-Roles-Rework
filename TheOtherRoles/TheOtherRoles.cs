@@ -5,6 +5,7 @@ using AmongUs.Data;
 using HarmonyLib;
 using Hazel;
 using Reactor.Utilities.Extensions;
+using Rewired.Utils.Platforms.Windows;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
@@ -252,7 +253,6 @@ public static class TheOtherRoles
             buttonSprite = Helpers.loadSpriteFromResources("DoveButton.png", 115f);
             return buttonSprite;
         }
-
         public static void clearAndReload()
         {
             peacedove = null;
@@ -2226,7 +2226,7 @@ public static class Prophet
     public static Sprite getButtonSprite()
     {
         if (buttonSprite) return buttonSprite;
-        buttonSprite = Helpers.loadSpriteFromResources("Reveal.png", 115f);
+        buttonSprite = Helpers.loadSpriteFromResources("OracleButton.png", 115f);
         return buttonSprite;
 
     }

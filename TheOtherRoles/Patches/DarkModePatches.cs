@@ -45,8 +45,8 @@ public static class DarkModePatches
             __instance.chatButton.selectedSprites.GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f);
             __instance.chatButton.transform.FindChild("Background").GetComponent<SpriteRenderer>().color = new Color(0.5f, 0.5f, 0.5f);
             __instance.quickChatButton.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 0.3f);
-            __instance.banButton.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 0.3f);
-            __instance.openKeyboardButton.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 0.3f);
+            //__instance.banButton.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 0.3f);
+            //__instance.openKeyboardButton.transform.GetChild(0).GetComponent<SpriteRenderer>().color = new Color(0.3f, 0.3f, 0.3f);
             __instance.quickChatButton.OnDestroy();
         }
     }

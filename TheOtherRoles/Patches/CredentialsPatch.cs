@@ -16,15 +16,11 @@ namespace TheOtherRoles.Patches
     [HarmonyPatch]
     public static class CredentialsPatch
     {
-        //        public static string fullCredentialsVersion =
-        //$@"<size=130%><color=#ff351f>TheOtherRolesCE</color></size> v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays > 0 ? "-BETA" : "")}";
-        public static string ModName = $"<size=130%><color=#C1FFC1>Among Us<color=#FF0000> The Other Roles <color=#8470FF>Reworked</color></color></color></size> v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays > 0 ? "-BETA" : "")}";
+        public static string ModName = $"<size=130%><color=#FF0000>The Other Roles <color=#8470FF>Rework</color></color></size> v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays > 0 ? "-BETA" : "")}";
         public static string FangKuai = "<color=#00FFFF>FangKuai</color>";
         public static string TOR = "<color=#FCCE03FF>TheOtherRolesAU</color>";
         public static string ELinmei = "<color=#00FFFF>ELinmei</color>";
 
-        //        public static string contributorsCredentials =
-        //$@"<size=60%> <color=#FCCE03FF>Special thanks to <color=#00FFFF>FangKuai<color=#FCCE03FF> & Smeggy</color></size>";
         private static float deltaTime;
         [HarmonyPatch(typeof(PingTracker), nameof(PingTracker.Update))]
         internal static class PingTrackerPatch
@@ -51,7 +47,7 @@ namespace TheOtherRoles.Patches
                     else if (HandleGuesser.isGuesserGm) gameModeText = ModTranslation.GetString("isGuesserGm");
                     else if (PropHunt.isPropHuntGM) gameModeText = ModTranslation.GetString("isPropHuntGM");
                     if (gameModeText != "") gameModeText = Helpers.cs(Color.yellow, gameModeText) + "\n";
-                    __instance.text.text = $"<size=130%><color=#C1FFC1>Among Us<color=#FF0000> The Other Roles <color=#8470FF>Reworked</color></color></color></size> v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays > 0 ? "-BETA" : "") + "\n" + $"{gameModeText}" + $"<color={PingColor}>PING: <b>{AmongUsClient.Instance.Ping}</b> MS</color>" + $"  {(TORMapOptions.showFPS ? $"  <color=#00a4ff>FPS: {fps}</color>" : "")}{(Helpers.isSpecialDay(4,1) ? (Helpers.IsChinese() ? "\n<color=#7CFC00>愚人节快乐!!</color>" : "\n<color=#7CFC00>Happy April Fool's Day!!</color>") : "")}"}";
+                    __instance.text.text = $"<size=130%><color=#FF0000> The Other Roles <color=#8470FF>Rework</color></color></size> v{TheOtherRolesPlugin.Version.ToString() + (TheOtherRolesPlugin.betaDays > 0 ? "-BETA" : "") + "\n" + $"{gameModeText}" + $"<color={PingColor}>PING: <b>{AmongUsClient.Instance.Ping}</b> MS</color>" + $"  {(TORMapOptions.showFPS ? $"  <color=#00a4ff>FPS: {fps}</color>" : "")}{(Helpers.isSpecialDay(4,1) ? (Helpers.IsChinese() ? "\n<color=#7CFC00>愚人节快乐!!</color>" : "\n<color=#7CFC00>Happy April Fool's Day!!</color>") : "")}"}";
 
                     position.DistanceFromEdge = new Vector3(1.5f, 0.11f, 0);
                 }
@@ -83,71 +79,44 @@ namespace TheOtherRoles.Patches
         {
             public static SpriteRenderer renderer;
             public static Sprite bannerSprite;
-            public static Sprite horseBannerSprite;
-            public static Sprite banner2Sprite;
             private static PingTracker instance;
-
             public static GameObject motdObject;
             public static TextMeshPro motdText;
-
             static void Postfix(PingTracker __instance)
             {
                 var torLogo = new GameObject("bannerLogo_TOR");
-                torLogo.transform.SetParent(GameObject.Find("RightPanel").transform, false);
-                torLogo.transform.localPosition = new Vector3(-0.4f, 1f, 5f);
-
-                renderer = torLogo.AddComponent<SpriteRenderer>();
-                loadSprites();
-                // renderer.sprite = Helpers.loadSpriteFromResources("TheOtherRoles.Resources.NewBanner.png", 1145141919810);
-                //这些先不删了
-                instance = __instance;
-                loadSprites();
-                // renderer.sprite = TORMapOptions.enableHorseMode ? horseBannerSprite : bannerSprite;
-                renderer.sprite = EventUtility.isEnabled ? banner2Sprite : bannerSprite;
-                var credentialObject = new GameObject("credentialsTOR");
-                var credentials = credentialObject.AddComponent<TextMeshPro>();
-                credentials.alignment = TMPro.TextAlignmentOptions.Center;
-                credentials.fontSize *= 0.05f;
-
-                credentials.transform.SetParent(torLogo.transform);
-                credentials.transform.localPosition = new Vector3(-0.5f,-2.4f,0f);
                 motdObject = new GameObject("torMOTD");
                 motdText = motdObject.AddComponent<TextMeshPro>();
                 motdText.alignment = TMPro.TextAlignmentOptions.Center;
-                motdText.fontSize *= 0.04f;
+                motdText.fontSize *= 0.045f;
 
-                motdText.transform.SetParent(GameObject.Find("RightPanel").transform, false);
+                motdText.transform.SetParent(torLogo.transform);
                 motdText.enableWordWrapping = true;
                 var rect = motdText.gameObject.GetComponent<RectTransform>();
                 rect.sizeDelta = new Vector2(5.2f, 0.25f);
 
-                if(LobbyJoinBind.LobbyText.GetComponent<TextMeshPro>().text == null) motdText.transform.localPosition = new Vector3(-0.5f, 1.15f, 0);
+                motdText.transform.localPosition = Vector3.down * 2.7f;
                 motdText.color = new Color(1, 53f / 255, 31f / 255);
                 Material mat = motdText.fontSharedMaterial;
                 mat.shaderKeywords = new string[] { "OUTLINE_ON" };
                 motdText.SetOutlineColor(Color.white);
-                motdText.SetOutlineThickness(0.025f);
-            }
-
-            public static void loadSprites()
-            {
-                if (bannerSprite == null) bannerSprite = Helpers.loadSpriteFromResources("NewBanner.png", 1145141919810);
-                if (banner2Sprite == null) banner2Sprite = Helpers.loadSpriteFromResources("NewBanner.png", 300f);
-                if (horseBannerSprite == null) horseBannerSprite = Helpers.loadSpriteFromResources("NewBanner.png", 300f);
+                motdText.SetOutlineThickness(0.095f);
             }
 
             public static void updateSprite()
             {
-                loadSprites();
+                //      loadSprites();
                 if (renderer != null)
                 {
                     float fadeDuration = 1f;
-                    instance.StartCoroutine(Effects.Lerp(fadeDuration, new Action<float>((p) => {
+                    instance.StartCoroutine(Effects.Lerp(fadeDuration, new Action<float>((p) =>
+                    {
                         renderer.color = new Color(1, 1, 1, 1 - p);
                         if (p == 1)
                         {
-                            renderer.sprite = TORMapOptions.enableHorseMode ? horseBannerSprite : bannerSprite;
-                            instance.StartCoroutine(Effects.Lerp(fadeDuration, new Action<float>((p) => {
+                            renderer.sprite = bannerSprite;
+                            instance.StartCoroutine(Effects.Lerp(fadeDuration, new Action<float>((p) =>
+                            {
                                 renderer.color = new Color(1, 1, 1, p);
                             })));
                         }
@@ -155,9 +124,6 @@ namespace TheOtherRoles.Patches
                 }
             }
         }
-        /// <summary>
-        /// 666
-        /// </summary>
         [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.LateUpdate))]
         public static class MOTD
         {

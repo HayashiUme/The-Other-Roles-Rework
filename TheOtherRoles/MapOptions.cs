@@ -16,7 +16,6 @@ internal static class TORMapOptions
     public static bool allowParallelMedBayScans;
     public static bool showLighterDarker = true;
     public static bool enableSoundEffects = true;
-    public static bool enableHorseMode;
     public static bool shieldFirstKill;
     public static bool InsteadDarkMode;
     public static bool ShowChatNotifications = true;
@@ -52,7 +51,6 @@ internal static class TORMapOptions
     {
         showRoleSummary = TheOtherRolesPlugin.ShowRoleSummary.Value;
         enableSoundEffects = TheOtherRolesPlugin.EnableSoundEffects.Value;
-        enableHorseMode = TheOtherRolesPlugin.EnableHorseMode.Value;
         ShowChatNotifications = TheOtherRolesPlugin.ShowChatNotifications.Value;
         showFPS = TheOtherRolesPlugin.ShowFPS.Value;
 

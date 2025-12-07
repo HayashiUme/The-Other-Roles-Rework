@@ -39,7 +39,6 @@ internal class MeetingHudPatch
 
         var selectedCount = selections.Where(b => b).Count();
         var renderer = renderers[i];
-
         if (selectedCount == 0)
         {
             renderer.color = Color.yellow;
