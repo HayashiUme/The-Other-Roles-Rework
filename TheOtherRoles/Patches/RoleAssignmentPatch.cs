@@ -6,13 +6,14 @@ using HarmonyLib;
 using Hazel;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Modules;
+using TheOtherRoles.Roles.Core;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
 
 namespace TheOtherRoles.Patches;
 
-[HarmonyPatch(typeof(RoleOptionsCollectionV09), nameof(RoleOptionsCollectionV09.GetNumPerGame))]
+[HarmonyPatch(typeof(RoleOptionsCollectionV08), nameof(RoleOptionsCollectionV08.GetNumPerGame))]
 internal class RoleOptionsDataGetNumPerGamePatch
 {
     public static void Postfix(ref int __result)
@@ -75,6 +76,9 @@ internal class RoleManagerSelectRolesPatch
             GameOptionsManager.Instance.currentGameOptions.GameMode == GameModes.HideNSeek
             || RoleDraft.isEnabled) return; // Don't assign Roles in Hide N Seek
         assignRoles();
+
+        // Notify new-style RoleBase roles that the game has started and roles are assigned
+        Roles.Core.RoleManager.OnGameStart();
     }
 
     private static void assignRoles()

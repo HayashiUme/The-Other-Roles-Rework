@@ -19,16 +19,24 @@ public static class ClientOptionsPatch
         new("ghostsSeeInformation",
             () => TORMapOptions.ghostsSeeInformation = TheOtherRolesPlugin.GhostsSeeInformation.Value =
                 !TheOtherRolesPlugin.GhostsSeeInformation.Value, TheOtherRolesPlugin.GhostsSeeInformation.Value),
+        new("ghostsSeeVotes",
+            () => TORMapOptions.ghostsSeeVotes =
+                TheOtherRolesPlugin.GhostsSeeVotes.Value = !TheOtherRolesPlugin.GhostsSeeVotes.Value,
+            TheOtherRolesPlugin.GhostsSeeVotes.Value),
+        new("ghostsSeeRoles",
+            () => TORMapOptions.ghostsSeeRoles =
+                TheOtherRolesPlugin.GhostsSeeRoles.Value = !TheOtherRolesPlugin.GhostsSeeRoles.Value,
+            TheOtherRolesPlugin.GhostsSeeRoles.Value),
+        new("ghostsSeeModifier",
+            () => TORMapOptions.ghostsSeeModifier = TheOtherRolesPlugin.GhostsSeeModifier.Value =
+                !TheOtherRolesPlugin.GhostsSeeModifier.Value, TheOtherRolesPlugin.GhostsSeeModifier.Value),
         new("showRoleSummary",
             () => TORMapOptions.showRoleSummary =
                 TheOtherRolesPlugin.ShowRoleSummary.Value = !TheOtherRolesPlugin.ShowRoleSummary.Value,
             TheOtherRolesPlugin.ShowRoleSummary.Value),
-        new("insteadRoleColor", () =>
-        {
-            TORMapOptions.InsteadDarkMode = TheOtherRolesPlugin.InsteadDarkMode.Value =
-                !TheOtherRolesPlugin.InsteadDarkMode.Value;
-            return TORMapOptions.InsteadDarkMode;
-        }, TheOtherRolesPlugin.EnableSoundEffects.Value),
+        new("showLighterDarker",
+            () => TORMapOptions.showLighterDarker = TheOtherRolesPlugin.ShowLighterDarker.Value =
+                !TheOtherRolesPlugin.ShowLighterDarker.Value, TheOtherRolesPlugin.ShowLighterDarker.Value),
         new("enableSoundEffects", () =>
         {
             TORMapOptions.enableSoundEffects = TheOtherRolesPlugin.EnableSoundEffects.Value =
@@ -36,6 +44,10 @@ public static class ClientOptionsPatch
             if (!TORMapOptions.enableSoundEffects) SoundEffectsManager.stopAll();
             return TORMapOptions.enableSoundEffects;
         }, TheOtherRolesPlugin.EnableSoundEffects.Value),
+        new("showVentsOnMap",
+            () => TORMapOptions.ShowVentsOnMap =
+                TheOtherRolesPlugin.ShowVentsOnMap.Value = !TheOtherRolesPlugin.ShowVentsOnMap.Value,
+            TheOtherRolesPlugin.ShowVentsOnMap.Value),
         new("showChatNotifications",
             () => TORMapOptions.ShowChatNotifications = TheOtherRolesPlugin.ShowChatNotifications.Value =
                 !TheOtherRolesPlugin.ShowChatNotifications.Value, TheOtherRolesPlugin.ShowChatNotifications.Value),

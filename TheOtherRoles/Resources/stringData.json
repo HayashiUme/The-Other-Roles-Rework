@@ -3362,24 +3362,36 @@
         "13": "模组设置..."
     },
     "ghostsSeeInformation": {
-        "0": "Ghosts See More Infos",
-        "13": "灵魂可见更多信息"
+        "0": "Ghosts See Tasks & Other Info",
+        "13": "灵魂可见任务和其他信息"
+    },
+    "ghostsSeeVotes": {
+        "0": "Ghosts Can See Votes",
+        "13": "灵魂可见投票结果"
+    },
+    "ghostsSeeRoles": {
+        "0": "Ghosts Can See Roles",
+        "13": "灵魂可见玩家职业"
+    },
+    "ghostsSeeModifier": {
+        "0": "Ghosts Can Additionally See Modifier",
+        "13": "灵魂可见附加职业"
     },
     "showRoleSummary": {
         "0": "Show Role Summary",
         "13": "显示职业总结"
     },
-    "insteadRoleColor": {
-        "0": "Instead Dark Mod Of Role Color",
-        "13": "启用职业颜色代替深色模式"
-    },
-    "enableDarkMode": {
-        "0": "Enable Dark Mode",
-        "13": "启用深色模式"
+    "showLighterDarker": {
+        "0": "Show Lighter / Darker",
+        "13": "显示颜色深浅"
     },
     "enableSoundEffects": {
         "0": "Enable Sound Effects",
         "13": "启用模组音效"
+    },
+    "showVentsOnMap": {
+        "0": "Show Vents On Map",
+        "13": "在地图上显示管道位置"
     },
     "showChatNotifications": {
         "0": "Show Chat Notifications",

@@ -8,6 +8,7 @@ using RewiredConsts;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
+using TheOtherRoles.Roles.Core;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using static TheOtherRoles.TheOtherRoles;
@@ -228,13 +229,13 @@ internal class HudManagerUpdatePatch
         if (PlayerControl.LocalPlayer == Devil.devil &&PlayerControl.LocalPlayer != null && Devil.devil != null && !Devil.devil.Data.IsDead && Deputy.deputy != null)
         {
             foreach (PlayerControl player in Devil.visionOfPlayersShouldBeChanged)
-                player.cosmetics.nameText.color = new Color(122,128,144);
+                player.cosmetics.nameText.text.Color(Color.gray);
 
             if (MeetingHud.Instance != null)
                 foreach (PlayerVoteArea player in MeetingHud.Instance.playerStates)
                     foreach (PlayerControl vplayer in Devil.visionOfPlayersShouldBeChanged)
                         if (Devil.visionOfPlayersShouldBeChanged != null && vplayer.PlayerId == player.TargetPlayerId)
-                        player.NameText.color = new Color(122, 128, 144);
+                        player.NameText.text.Color(Color.gray);
         }
 
         // Lovers
@@ -445,5 +446,8 @@ internal class HudManagerUpdatePatch
                 pet.Visible = ((PlayerControl.LocalPlayer.Data.IsDead && target.Data.IsDead) || !target.Data.IsDead) &&
                               !target.inVent;
         }
+
+        // Dispatch to new-style RoleBase roles
+        Roles.Core.RoleManager.OnHudUpdate(__instance);
     }
 }

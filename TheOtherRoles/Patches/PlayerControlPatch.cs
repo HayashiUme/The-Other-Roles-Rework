@@ -17,6 +17,7 @@ using static TheOtherRoles.TheOtherRoles;
 using static TheOtherRoles.GameHistory;
 using Object = UnityEngine.Object;
 using TheOtherRoles.Modules;
+using TheOtherRoles.Roles.Core;
 
 namespace TheOtherRoles.Patches;
 
@@ -704,7 +705,7 @@ public static class PlayerControlFixedUpdatePatch
 
                 var (tasksCompleted, tasksTotal) = TasksHandler.taskInfo(p.Data);
                 var roleNames = RoleInfo.GetRolesString(p, true, false);
-                var roleText = RoleInfo.GetRolesString(p, true, TORMapOptions.ghostsSeeInformation);
+                var roleText = RoleInfo.GetRolesString(p, true, TORMapOptions.ghostsSeeModifier);
                 var taskInfo = tasksTotal > 0 ? $"<color=#FAD934FF>({tasksCompleted}/{tasksTotal})</color>" : "";
 
                 var playerInfoText = "";
@@ -724,7 +725,7 @@ public static class PlayerControlFixedUpdatePatch
 
                     meetingInfoText = $"{roleNames} {taskInfo}".Trim();
                 }
-                else if (TORMapOptions.ghostsSeeInformation && TORMapOptions.ghostsSeeInformation)
+                else if (TORMapOptions.ghostsSeeRoles && TORMapOptions.ghostsSeeInformation)
                 {
                     playerInfoText = $"{roleText} {taskInfo}".Trim();
                     meetingInfoText = playerInfoText;
@@ -734,7 +735,7 @@ public static class PlayerControlFixedUpdatePatch
                     playerInfoText = $"{taskInfo}".Trim();
                     meetingInfoText = playerInfoText;
                 }
-                else if (TORMapOptions.ghostsSeeInformation || (Lawyer.lawyerKnowsRole &&
+                else if (TORMapOptions.ghostsSeeRoles || (Lawyer.lawyerKnowsRole &&
                                                           PlayerControl.LocalPlayer == Lawyer.lawyer &&
                                                           p == Lawyer.target))
                 {
@@ -1420,7 +1421,13 @@ public static class PlayerControlFixedUpdatePatch
             // -- GAME MODE --
             hunterUpdate();
             PropHunt.update();
+
+            // Dispatch local-player FixedUpdate to new-style roles
+            Roles.Core.RoleManager.OnFixedUpdate(__instance);
         }
+
+        // Dispatch per-player FixedUpdate to new-style roles (all players)
+        Roles.Core.RoleManager.OnFixedUpdateAll(__instance);
     }
 }
 
@@ -1455,8 +1462,6 @@ internal class PlayerControlCmdReportDeadBodyPatch
         return true;
     }
 }
-
-[HarmonyPatch(typeof(PlayerControl), nameof(PlayerControl.LocalPlayer.CmdReportDeadBody))]
 internal class BodyReportPatch
 {
     static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] NetworkedPlayerInfo target)
@@ -1516,6 +1521,10 @@ internal class BodyReportPatch
                 }
             }
         }
+
+        // Dispatch to new-style RoleBase roles
+        if (target != null)
+            Roles.Core.RoleManager.OnBodyReport(__instance, target);
     }
 }
 
@@ -1525,13 +1534,17 @@ public static class MurderPlayerPatch
     public static bool resetToCrewmate;
     public static bool resetToDead;
 
-    public static void Prefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
+    public static bool Prefix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
     {
+        // Allow new-style roles to cancel the kill
+        if (!Roles.Core.RoleManager.OnMurderPlayerPre(__instance, target)) return false;
+
         // Allow everyone to murder players
         resetToCrewmate = !__instance.Data.Role.IsImpostor;
         resetToDead = __instance.Data.IsDead;
         __instance.Data.Role.TeamType = RoleTeamTypes.Impostor;
         __instance.Data.IsDead = false;
+        return true;
     }
 
     public static void Postfix(PlayerControl __instance, [HarmonyArgument(0)] PlayerControl target)
@@ -1703,6 +1716,9 @@ public static class MurderPlayerPatch
                 Object.Destroy(a.Value);
                 MapBehaviourPatch.herePoints.Remove(a.Key);
             }
+
+        // Dispatch to new-style RoleBase roles
+        Roles.Core.RoleManager.OnMurderPlayer(__instance, target);
     }
 }
 
@@ -1830,6 +1846,9 @@ public static class ExilePlayerPatch
                     lawyer); // TODO: only executed on host?!
             }
         }
+
+        // Dispatch to new-style RoleBase roles
+        Roles.Core.RoleManager.OnExiled(__instance);
     }
 }
 

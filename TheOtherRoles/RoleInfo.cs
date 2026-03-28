@@ -266,7 +266,6 @@ public class RoleInfo
         this.isModifier = isModifier;
         roleInfoById.TryAdd(roleId, this);
     }
-    
 
     public bool isImpostor => color == Palette.ImpostorRed && !(roleId == RoleId.Spy);
 

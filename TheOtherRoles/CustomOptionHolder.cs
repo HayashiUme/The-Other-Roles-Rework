@@ -483,8 +483,8 @@ public class CustomOptionHolder
         CustomOption.vanillaSettings = TheOtherRolesPlugin.Instance.Config.Bind("Preset0", "VanillaOptions", "");
 
         // Role Options
-        presetSelection = CustomOption.CreateSpeacialOption(Types.General,
-            new Color(204f / 255f, 204f / 255f, 0, 1f), "presetSelectionText", presets, null, true);
+        presetSelection = CustomOption.Create(Types.General,
+            cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "presetSelectionText"), presets, null, true);
 
 
         if (EventUtility.canBeEnabled)
@@ -523,7 +523,7 @@ public class CustomOptionHolder
         crewmateRolesFill = CustomOption.Create(Types.General,
             cs(new Color(204f / 255f, 204f / 255f, 0, 1f), "crewmateRolesFill"), false);
 
-        mafiaSpawnRate = CustomOption.CreateSpeacialOption(Types.Impostor, Janitor.color, cs(Janitor.color,"mafia"), rates, null, true);
+        mafiaSpawnRate = CustomOption.Create(Types.Impostor, cs(Janitor.color, "mafia"), rates, null, true);
         janitorCooldown = CustomOption.Create(Types.Impostor, "janitorCooldown", 30f, 10f, 60f, 2.5f, mafiaSpawnRate);
 
         morphlingSpawnRate = CustomOption.CreateRoleOption(Types.Impostor, RoleId.Morphling, rates, null, true);
@@ -602,7 +602,7 @@ public class CustomOptionHolder
         devilCooldwon = CustomOption.Create(Types.Impostor, "devilCooldown", 20f, 2.5f, 120f, 2.5f, devilSpawnRate);
         
 
-        guesserSpawnRate = CustomOption.CreateSpeacialOption(Types.Neutral, Guesser.color, cs(Guesser.color,"guesser"), rates, null, true);
+        guesserSpawnRate = CustomOption.Create(Types.Neutral, cs(Guesser.color, "guesser"), rates, null, true);
         guesserIsImpGuesserRate = CustomOption.Create(Types.Neutral, "guesserIsImpGuesserRate", rates, guesserSpawnRate);
         guesserNumberOfShots = CustomOption.Create(Types.Neutral, "guesserNumberOfShots", 2f, 1f, 15f, 1f, guesserSpawnRate);
         guesserHasMultipleShotsPerMeeting = CustomOption.Create(Types.Neutral, "guesserHasMultipleShotsPerMeeting", false, guesserSpawnRate);
@@ -856,7 +856,7 @@ CustomOption.Create(Types.Crewmate, "deputyCanStopGameEnd", true, deputySpawnRat
         peaceDoveSpawnRate = CustomOption.CreateRoleOption(Types.Crewmate, RoleId.PeaceDove, rates, null, true);
         peaceDoveCooldown = CustomOption.Create(Types.Crewmate, "peaceDoveCooldown", 30f, 5f, 60f, 5f, peaceDoveSpawnRate);
         peaceDoveReloadMaxNum = CustomOption.Create(Types.Crewmate, "peaceDoveReloadMaxNum", 4f, 1f, 10f, 1f, peaceDoveSpawnRate);
-        peaceDoveReloadSkills = CustomOption.Create(Types.Crewmate, "peaceReloadSkills", false, peaceDoveSpawnRate);
+        peaceDoveReloadSkills = CustomOption.Create(Types.Crewmate, "peacedoveReloadSkills", false, peaceDoveSpawnRate);
         // Modifier (1000 - 1999)
         modifiersAreHidden = CustomOption.Create(Types.Modifier,
             cs(Color.yellow, "modifiersAreHidden"), true, null, true,

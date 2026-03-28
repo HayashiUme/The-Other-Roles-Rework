@@ -11,13 +11,17 @@ internal static class TORMapOptions
     public static bool blockSkippingInEmergencyMeetings;
     public static bool noVoteIsSelfVote;
     public static bool hidePlayerNames;
+    public static bool ghostsSeeRoles = true;
+    public static bool ghostsSeeModifier = true;
     public static bool ghostsSeeInformation = true;
+    public static bool ghostsSeeVotes = true;
     public static bool showRoleSummary = true;
     public static bool allowParallelMedBayScans;
     public static bool showLighterDarker = true;
     public static bool enableSoundEffects = true;
+    public static bool enableHorseMode;
     public static bool shieldFirstKill;
-    public static bool InsteadDarkMode;
+    public static bool ShowVentsOnMap = true;
     public static bool ShowChatNotifications = true;
     public static CustomGamemodes gameMode = CustomGamemodes.Classic;
     public static bool showFPS = true;
@@ -49,8 +53,15 @@ internal static class TORMapOptions
 
     public static void reloadPluginOptions()
     {
+        ghostsSeeRoles = TheOtherRolesPlugin.GhostsSeeRoles.Value;
+        ghostsSeeModifier = TheOtherRolesPlugin.GhostsSeeModifier.Value;
+        ghostsSeeInformation = TheOtherRolesPlugin.GhostsSeeInformation.Value;
+        ghostsSeeVotes = TheOtherRolesPlugin.GhostsSeeVotes.Value;
         showRoleSummary = TheOtherRolesPlugin.ShowRoleSummary.Value;
+        showLighterDarker = TheOtherRolesPlugin.ShowLighterDarker.Value;
         enableSoundEffects = TheOtherRolesPlugin.EnableSoundEffects.Value;
+        enableHorseMode = TheOtherRolesPlugin.EnableHorseMode.Value;
+        ShowVentsOnMap = TheOtherRolesPlugin.ShowVentsOnMap.Value;
         ShowChatNotifications = TheOtherRolesPlugin.ShowChatNotifications.Value;
         showFPS = TheOtherRolesPlugin.ShowFPS.Value;
 

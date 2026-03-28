@@ -39,8 +39,7 @@ public enum CustomGamemodes
     Classic,
     Guesser,
     HideNSeek,
-    PropHunt,
-    TemporKillers
+    PropHunt
 }
 
 public static class Helpers
@@ -194,6 +193,15 @@ public static class Helpers
         //if (Constants.ShouldPlaySfx()) SoundManager.Instance.PlaySound(exampleClip, false, 0.8f);
 
     }*/
+
+    public static bool IsDarkColor(Color color)
+    {
+        int r = (int)(color.r * 255);
+        int g = (int)(color.g * 255);
+        int b = (int)(color.b * 255);
+        float luminance = (0.299f * r + 0.587f * g + 0.114f * b) / 255f;
+        return luminance <= 0.5f;
+    }
 
     public static string readTextFromResources(string path)
     {
@@ -949,22 +957,6 @@ public static class Helpers
                     $"Beta will remain runnable for {TheOtherRolesPlugin.betaDays - (now - compileTime)?.TotalDays} days!");
             }
         }
-    }
-    public static Color ToMarkingColor(this Color color, bool bright = true)
-    {
-        Color.RGBToHSV(color, out var h, out _, out var v);
-        var markingColor = Color.HSVToRGB(h, 1f, bright ? 1f : v).SetAlpha(0.2f);
-        return markingColor;
-    }
-    /// <summary>
-    /// 判断颜色是否为深色（考虑Alpha通道的预乘处理）
-    /// </summary>
-    /// <param name="color">目标颜色（含RGBA）</param>
-    /// <returns>true表示深色，false表示浅色</returns>
-    public static bool IsDarkColor(Color color)
-    {
-        if(color.g + color.r + color.b >= 450) return false;
-        return true;
     }
     public static bool CheckDebug()
     {

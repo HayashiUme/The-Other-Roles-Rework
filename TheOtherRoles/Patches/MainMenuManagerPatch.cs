@@ -1,23 +1,20 @@
-﻿using HarmonyLib;
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
+using HarmonyLib;
+using TheOtherRoles.Modules;
 using UnityEngine;
-using UnityEngine.UI;
-using Object = UnityEngine.Object;
 
-namespace TheOtherRoles.Patches;
+namespace TheOtherRoles;
 
-[HarmonyPatch(typeof(MainMenuManager))]
+[HarmonyPatch]
 public static class MainMenuManagerPatch
 {
-    [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.LateUpdate)), HarmonyPostfix]
-    public static T FindChild<T>(this GameObject obj, string name) where T : Object
-    {
-        string name2 = name;
-        return obj.GetComponentsInChildren<T>().First((T c) => c.name == name2);
-    }
     public static MainMenuManager Instance { get; private set; }
+
+    public static IEnumerable<T> Flatten<T>(this IEnumerable<IEnumerable<T>> collection)
+    {
+        return collection.SelectMany(x => x);
+    }
 
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.OpenGameModeMenu))]
     [HarmonyPatch(typeof(MainMenuManager), nameof(MainMenuManager.OpenAccountMenu))]

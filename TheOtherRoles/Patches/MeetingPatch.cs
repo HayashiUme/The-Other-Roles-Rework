@@ -5,6 +5,7 @@ using HarmonyLib;
 using Hazel;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
+using TheOtherRoles.Roles.Core;
 using TheOtherRoles.Utilities;
 using TMPro;
 using UnityEngine;
@@ -39,6 +40,7 @@ internal class MeetingHudPatch
 
         var selectedCount = selections.Where(b => b).Count();
         var renderer = renderers[i];
+
         if (selectedCount == 0)
         {
             renderer.color = Color.yellow;
@@ -687,7 +689,7 @@ internal class MeetingHudPatch
         {
             var spriteRenderer = Object.Instantiate(__instance.PlayerVotePrefab);
             var showVoteColors = !GameManager.Instance.LogicOptions.GetAnonymousVotes() ||
-                                 (PlayerControl.LocalPlayer.Data.IsDead && ghostsSeeInformation) ||
+                                 (PlayerControl.LocalPlayer.Data.IsDead && ghostsSeeVotes) ||
                                  (Mayor.mayor != null && Mayor.mayor == PlayerControl.LocalPlayer &&
                                   Mayor.canSeeVoteColors &&
                                   TasksHandler.taskInfo(PlayerControl.LocalPlayer.Data).Item1 >=
@@ -814,6 +816,9 @@ internal class MeetingHudPatch
             // Snitch
             if (Snitch.snitch != null && !Snitch.needsUpdate && Snitch.snitch.Data.IsDead && Snitch.text != null)
                 Object.Destroy(Snitch.text);
+
+            // Dispatch to new-style RoleBase roles
+            Roles.Core.RoleManager.OnVotingComplete(__instance, null, exiled, tie);
         }
     }
 
@@ -833,6 +838,9 @@ internal class MeetingHudPatch
         private static void Postfix(MeetingHud __instance)
         {
             populateButtonsPostfix(__instance);
+
+            // Dispatch to new-style RoleBase roles
+            Roles.Core.RoleManager.OnMeetingStart(__instance);
         }
     }
 

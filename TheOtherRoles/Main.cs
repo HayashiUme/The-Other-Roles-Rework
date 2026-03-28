@@ -22,6 +22,7 @@ using Reactor.Networking.Attributes;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Modules.CustomHats;
 using TheOtherRoles.Patches;
+using TheOtherRoles.Roles.Core;
 using TheOtherRoles.Utilities;
 using UnityEngine;
 using UnityEngine.Events;
@@ -57,9 +58,14 @@ public class TheOtherRolesPlugin : BasePlugin
 
     public static ConfigEntry<string> DebugMode { get; private set; }
     public static ConfigEntry<bool> GhostsSeeInformation { get; set; }
+    public static ConfigEntry<bool> GhostsSeeRoles { get; set; }
+    public static ConfigEntry<bool> GhostsSeeModifier { get; set; }
+    public static ConfigEntry<bool> GhostsSeeVotes { get; set; }
     public static ConfigEntry<bool> ShowRoleSummary { get; set; }
-    public static ConfigEntry<bool> InsteadDarkMode { get; set; }
+    public static ConfigEntry<bool> ShowLighterDarker { get; set; }
     public static ConfigEntry<bool> EnableSoundEffects { get; set; }
+    public static ConfigEntry<bool> EnableHorseMode { get; set; }
+    public static ConfigEntry<bool> ShowVentsOnMap { get; set; }
     public static ConfigEntry<bool> ShowChatNotifications { get; set; }
     public static ConfigEntry<string> Ip { get; set; }
     public static ConfigEntry<ushort> Port { get; set; }
@@ -70,27 +76,28 @@ public class TheOtherRolesPlugin : BasePlugin
     // file="RegionInstallPlugin.cs" company="miniduikboot">
     public static void UpdateRegions()
     {
-        ServerManager serverManager = FastDestroyableSingleton<ServerManager>.Instance;
-        var regions = new IRegionInfo[]
+        var serverManager = FastDestroyableSingleton<ServerManager>.Instance;
+        var regions = new[]
         {
-                new StaticHttpRegionInfo("<color=#76BAF6>Niko233 Server [China,Asis]</color>", StringNames.NoTranslation, "https://aucn2.niko233.me", new Il2CppReferenceArray<ServerInfo>(new ServerInfo[1] { new ServerInfo("Niko233(AS_CN)", "https://aucn2.niko233.me", 443, false) })).CastFast<IRegionInfo>(),
-                new StaticHttpRegionInfo("<color=#D2A2EE>Niko233 Server [USA,NorthAmerica]</color>", StringNames.NoTranslation, "https://au-us2.niko233.me", new Il2CppReferenceArray<ServerInfo>(new ServerInfo[1] { new ServerInfo("Niko233(NA_US2)", "https://au-us2.niko233.me", 443, false) })).CastFast<IRegionInfo>(),
-                new StaticHttpRegionInfo("<color=#49F0FC>TORR Server</color> <color=#8732FF>[SuQian,China]</color>", StringNames.NoTranslation, "https://newplayer.fangkuai.fun", new Il2CppReferenceArray<ServerInfo>(new ServerInfo[1] { new ServerInfo("<color=#49F0FC>方块服</color> <color=#8732FF>[宿迁]</color>", "http://sq.fangkuai.fun", 22020, false) })).CastFast<IRegionInfo>(),
-                new StaticHttpRegionInfo("<color=#49F0FC>FangKuai Server</color> <color=#00bfff>[HongKong,China]</color>", StringNames.NoTranslation, "https://newauhk.fangkuai.fun", new Il2CppReferenceArray<ServerInfo>(new ServerInfo[1] { new ServerInfo("方块服 [宿迁]", "https://player.fangkuai.fun", 443, false) })).CastFast<IRegionInfo>(),
+            new StaticHttpRegionInfo("Custom", StringNames.NoTranslation, Ip.Value,
+                    new Il2CppReferenceArray<ServerInfo>(new ServerInfo[1]
+                        { new("Custom", Ip.Value, Port.Value, false) }))
+                .CastFast<IRegionInfo>()
         };
-        IRegionInfo currentRegion = serverManager.CurrentRegion;
+
+        var currentRegion = serverManager.CurrentRegion;
         Logger.LogInfo($"Adding {regions.Length} regions");
-        foreach (IRegionInfo region in regions)
-        {
+        foreach (var region in regions)
             if (region == null)
+            {
                 Logger.LogError("Could not add region");
+            }
             else
             {
                 if (currentRegion != null && region.Name.Equals(currentRegion.Name, StringComparison.OrdinalIgnoreCase))
                     currentRegion = region;
                 serverManager.AddOrUpdateRegion(region);
             }
-        }
 
         // AU remembers the previous region that was set, so we need to restore it
         if (currentRegion != null)
@@ -110,10 +117,15 @@ public class TheOtherRolesPlugin : BasePlugin
 
         DebugMode = Config.Bind("Custom", "Enable Debug Mode", "false");
         GhostsSeeInformation = Config.Bind("Custom", "Ghosts See Remaining Tasks", true);
+        GhostsSeeRoles = Config.Bind("Custom", "Ghosts See Roles", true);
+        GhostsSeeModifier = Config.Bind("Custom", "Ghosts See Modifier", true);
+        GhostsSeeVotes = Config.Bind("Custom", "Ghosts See Votes", true);
         ShowRoleSummary = Config.Bind("Custom", "Show Role Summary", true);
-        InsteadDarkMode = Config.Bind("Custom", "Instead Dark Mod Of Role Color", false);
+        ShowLighterDarker = Config.Bind("Custom", "Show Lighter / Darker", true);
         EnableSoundEffects = Config.Bind("Custom", "Enable Sound Effects", true);
+        EnableHorseMode = Config.Bind("Custom", "Enable Horse Mode", false);
         ShowPopUpVersion = Config.Bind("Custom", "Show PopUp", "0");
+        ShowVentsOnMap = Config.Bind("Custom", "Show vent positions on minimap", false);
         ShowChatNotifications = Config.Bind("Custom", "Show Chat Notifications", true);
         ShowFPS = Config.Bind("Custom", "Show FPS", true);
 
@@ -146,7 +158,11 @@ public class TheOtherRolesPlugin : BasePlugin
         MainMenuPatch.addSceneChangeCallbacks();
         _ = RoleInfo.loadReadme();
         AddToKillDistanceSetting.addKillDistance();
-        Logger.LogInfo("Loading TORR completed!");
+
+        // ── New-style roles (RoleBase / EnhancedRPC / EventBus) ──────────────
+        Roles.Core.RoleManager.LoadAll(Logger);
+
+        Logger.LogInfo("Loading TOR completed!");
     }
 }
 

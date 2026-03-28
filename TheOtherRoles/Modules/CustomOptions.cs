@@ -103,13 +103,7 @@ public class CustomOption
         CustomOption parent = null, bool isHeader = false, Action onChange = null, string heading = "",
         bool invertedParent = false, int id2 = 0)
     {
-        return new CustomOption(numId++, type, Color.white, name, selections, "", parent, isHeader, onChange, heading, invertedParent, id2);
-    }
-    public static CustomOption CreateSpeacialOption(CustomOptionType type, Color color,string name, string[] selections,
-       CustomOption parent = null, bool isHeader = false, Action onChange = null, string heading = "",
-       bool invertedParent = false, int id2 = 0)
-    {
-        return new CustomOption(numId++, type, color, name, selections, "", parent, isHeader, onChange, heading, invertedParent, id2);
+        return new CustomOption(numId++, type, Color.gray, name, selections, "", parent, isHeader, onChange, heading, invertedParent, id2);
     }
 
     public static CustomOption Create(CustomOptionType type, string name, float defaultValue, float min,
@@ -119,7 +113,7 @@ public class CustomOption
         List<object> selections = new();
         for (var s = min; s <= max; s += step)
             selections.Add(s);
-        return new CustomOption(numId++, type, Color.white,name, selections.ToArray(), defaultValue, parent, isHeader, onChange, heading,
+        return new CustomOption(numId++, type, Color.gray,name, selections.ToArray(), defaultValue, parent, isHeader, onChange, heading,
             invertedParent, id2);
     }
 
@@ -127,7 +121,7 @@ public class CustomOption
         CustomOption parent = null, bool isHeader = false, Action onChange = null, string heading = "",
         bool invertedParent = false, int id2 = 0)
     {
-        return new CustomOption(numId++, type,Color.white, name, new[] { "<color=#696969>optionOff</color>".Translate(), "<color=#00FFFF>optionOn</color>".Translate() }, defaultValue ? "<color=#00FFFF>optionOn</color>".Translate() : "<color=#696969>optionOff</color>".Translate(), parent, isHeader,
+        return new CustomOption(numId++, type,Color.gray, name, new[] { "<color=#696969>optionOff</color>".Translate(), "<color=#00FFFF>optionOn</color>".Translate() }, defaultValue ? "<color=#00FFFF>optionOn</color>".Translate() : "<color=#696969>optionOff</color>".Translate(), parent, isHeader,
             onChange, heading, invertedParent, id2);
     }
 
@@ -477,6 +471,7 @@ internal class GameOptionsMenuChangeTabPatch
         }
     }
 }
+
 [HarmonyPatch(typeof(LobbyViewSettingsPane), nameof(LobbyViewSettingsPane.SetTab))]
 internal class LobbyViewSettingsPaneRefreshTabPatch
 {
@@ -661,8 +656,6 @@ internal class LobbyViewSettingsPatch
                 categoryHeaderMasked.transform.SetParent(__instance.settingsContainer);
                 categoryHeaderMasked.transform.localScale = Vector3.one;
                 categoryHeaderMasked.transform.localPosition = new Vector3(-9.77f, num, -2f);
-                categoryHeaderMasked.transform.GetChild(0).GetComponent<SpriteRenderer>().color = option.getColor();
-                categoryHeaderMasked.transform.GetChild(1).GetComponent<SpriteRenderer>().color = option.getColor();
                 __instance.settingsInfo.Add(categoryHeaderMasked.gameObject);
                 num -= 1.05f;
                 i = 0;
@@ -945,7 +938,6 @@ internal class GameOptionsMenuStartPatch
                 categoryHeaderMasked.transform.localPosition = new Vector3(-0.903f, num, -2f);
                 //categoryHeaderMasked.Background.sprite = Helpers.loadSpriteFromResources("poolablesBackground.jpg", 100f);
                 categoryHeaderMasked.transform.GetChild(0).GetComponent<SpriteRenderer>().color = option.getColor();
-                categoryHeaderMasked.transform.GetChild(1).GetComponent<SpriteRenderer>().color = option.getColor();
                 num -= 0.63f;
             }
             else if (option.parent != null && ((option.parent.selection == 0 && !option.invertedParent) ||

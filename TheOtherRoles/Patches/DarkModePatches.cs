@@ -22,14 +22,10 @@ public static class DarkModePatches
             __instance.MaskArea.color = new UnityEngine.Color(0.1f, 0.1f, 0.1f);
             __instance.TextArea.color = new UnityEngine.Color(1, 1, 1);
             __instance.TextArea.outlineWidth = __instance.NameText.outlineWidth * 0.75f;
-            if (TheOtherRolesPlugin.InsteadDarkMode.Value)
-            {
-                __instance.Background.color = new Color (color.r,color.g, color.b , 0.5f);
-                __instance.MaskArea.color = color;
-                __instance.TextArea.color = Helpers.IsDarkColor(color) ? Color.black : Color.white;
-                __instance.TextArea.outlineWidth = __instance.NameText.outlineWidth * 0.75f;
-            }
-            else return; 
+            __instance.Background.color = new Color(color.r, color.g, color.b, 0.5f);
+            __instance.MaskArea.color = color;
+            __instance.TextArea.color = Helpers.IsDarkColor(color) ? Color.black : Color.white;
+            __instance.TextArea.outlineWidth = __instance.NameText.outlineWidth * 0.75f;
         }
     }
 

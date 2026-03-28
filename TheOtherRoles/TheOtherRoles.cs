@@ -5,7 +5,6 @@ using AmongUs.Data;
 using HarmonyLib;
 using Hazel;
 using Reactor.Utilities.Extensions;
-using Rewired.Utils.Platforms.Windows;
 using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
@@ -253,6 +252,7 @@ public static class TheOtherRoles
             buttonSprite = Helpers.loadSpriteFromResources("DoveButton.png", 115f);
             return buttonSprite;
         }
+
         public static void clearAndReload()
         {
             peacedove = null;
@@ -2222,19 +2222,22 @@ public static class Prophet
     public static Dictionary<PlayerControl, bool> examined = new();
     public static PlayerControl currentTarget;
 
+
+
     private static Sprite buttonSprite;
     public static Sprite getButtonSprite()
     {
         if (buttonSprite) return buttonSprite;
         buttonSprite = Helpers.loadSpriteFromResources("OracleButton.png", 115f);
         return buttonSprite;
-
     }
+
     public static bool isKiller(PlayerControl p)
     {
         var rand = rnd.Next(1, 101);
         return (Helpers.isEvil(p) && rand <= accuracy) || (!Helpers.isEvil(p) && rand > accuracy);
     }
+
     public static void clearAndReload()
     {
         prophet = null;
@@ -2247,7 +2250,7 @@ public static class Prophet
         accuracy = CustomOptionHolder.prophetAccuracy.getFloat();
         canCallEmergency = CustomOptionHolder.prophetCanCallEmergency.getBool();
         examinesToBeRevealed = Math.Min(examineNum, Mathf.RoundToInt(CustomOptionHolder.prophetExaminesToBeRevealed.getFloat()));
-        examinesLeft = 3;
+        examinesLeft = examineNum;
         if (arrows != null)
         {
             foreach (Arrow arrow in arrows)

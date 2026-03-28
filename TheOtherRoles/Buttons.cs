@@ -10,8 +10,6 @@ using TheOtherRoles.Patches;
 using TheOtherRoles.Utilities;
 using TMPro;
 using UnityEngine;
-using static MS.Internal.Xml.XPath.QueryBuilder;
-using static TheOtherRoles.Objects.Prop;
 using static TheOtherRoles.TheOtherRoles;
 using Object = UnityEngine.Object;
 using Random = System.Random;
@@ -99,9 +97,7 @@ internal static class HudManagerStartPatch
     public static TMP_Text portalmakerButtonText1;
     public static TMP_Text portalmakerButtonText2;
     public static TMP_Text huntedShieldCountText;
-    public static TMP_Text prophetButtonText;
 
-    public static Prop.Proptip JackalSidekickPropTip;
     public static void setCustomButtonCooldowns()
     {
         if (!initialized)
@@ -1160,26 +1156,6 @@ internal static class HudManagerStartPatch
             buttonText: "fraudsterButtonSuicide"
         );
 
-        peacedoveButton = new CustomButton(
-            () =>
-            {
-                MessageWriter ReloadWriter = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ReloadCooldowns, Hazel.SendOption.Reliable, -1);
-                AmongUsClient.Instance.FinishRpcImmediately(ReloadWriter);
-                RPCProcedure.reloadCooldowns();
-            },
-            () => { return PlayerControl.LocalPlayer == PeaceDove.peacedove && !PlayerControl.LocalPlayer.Data.IsDead; },
-            () => { return true; },
-            () =>
-            {
-                peacedoveButton.Timer = peacedoveButton.MaxTimer = 20f;
-            },
-            PeaceDove.getButtonSprite(),
-            CustomButton.ButtonPositions.upperRowLeft,
-            __instance,
-            KeyCode.F,
-            buttonText: "peacedoveButtonReload"
-        );
-
         garlicButton = new CustomButton(
             () =>
             {
@@ -1403,7 +1379,6 @@ internal static class HudManagerStartPatch
             },
             () =>
             {
-                jackalSidekickButton.actionButtonGameObject.AddComponent<Prop.Proptip>().ProptipText = "µã»÷´´½¨¸ú°à";
                 return Jackal.canCreateSidekick && Jackal.currentTarget != null && PlayerControl.LocalPlayer.CanMove;
             },
             () => { jackalSidekickButton.Timer = jackalSidekickButton.MaxTimer; },
@@ -1541,27 +1516,57 @@ internal static class HudManagerStartPatch
             buttonText: "devilButtonBlind"
         );
 
-        prophetButton = new CustomButton(
+        peacedoveButton = new CustomButton(
             () =>
             {
-                prophetButton.Timer = prophetButton.MaxTimer;
-                MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,(byte)CustomRPC.ProphetExamine,Hazel.SendOption.Reliable, -1);
-                writer.Write(Prophet.currentTarget.PlayerId);
+                var writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId,
+                    (byte)CustomRPC.ReloadCooldowns, SendOption.Reliable);
                 AmongUsClient.Instance.FinishRpcImmediately(writer);
-                RPCProcedure.prophetExamine(Prophet.currentTarget.PlayerId);
+                RPCProcedure.reloadCooldowns();
             },
             () =>
             {
-                return Prophet.prophet != null && Prophet.prophet == PlayerControl.LocalPlayer &&
-                       !PlayerControl.LocalPlayer.Data.IsDead && Prophet.examineNum != 0;
+                return PeaceDove.peacedove != null && PeaceDove.peacedove == PlayerControl.LocalPlayer &&
+                       PeaceDove.reloadMaxNum > 0 && !PlayerControl.LocalPlayer.Data.IsDead;
             },
-            () => { return PlayerControl.LocalPlayer.CanMove && Prophet.examineNum != 0; },
-            () => { prophetButton.Timer = prophetButton.MaxTimer; },
-            Prophet.getButtonSprite(),
-            CustomButton.ButtonPositions.upperRowLeft,
+            () =>
+            {
+                return PlayerControl.LocalPlayer.CanMove;
+            },
+            () => {peacedoveButton.Timer = peacedoveButton.MaxTimer; },
+            PeaceDove.getButtonSprite(),
+            CustomButton.ButtonPositions.upperRowRight,
             __instance,
             KeyCode.F,
-            buttonText: "prophetButtonExamine"
+            buttonText: "peacedoveButtonReload"
+        );
+
+
+        prophetButton = new CustomButton(
+
+            () =>
+            {
+                if (Prophet.currentTarget != null)
+                {
+                    MessageWriter writer = AmongUsClient.Instance.StartRpcImmediately(PlayerControl.LocalPlayer.NetId, (byte)CustomRPC.ProphetExamine, Hazel.SendOption.Reliable, -1);
+                    writer.Write(Prophet.currentTarget.PlayerId);
+                    AmongUsClient.Instance.FinishRpcImmediately(writer);
+                    RPCProcedure.prophetExamine(Prophet.currentTarget.PlayerId);
+
+                    prophetButton.Timer = prophetButton.MaxTimer;
+                }
+            },
+               () => { return Prophet.prophet != null && PlayerControl.LocalPlayer == Prophet.prophet && !PlayerControl.LocalPlayer.Data.IsDead && Prophet.examinesLeft > 0; },
+               () =>
+               {
+                   return Prophet.currentTarget != null && PlayerControl.LocalPlayer.CanMove;
+               },
+               () => { prophetButton.Timer = prophetButton.MaxTimer; },
+               Prophet.getButtonSprite(),
+               CustomButton.ButtonPositions.lowerRowRight,
+               __instance,
+               KeyCode.F,
+               buttonText: "ProphetText"
         );
 
         placeJackInTheBoxButton = new CustomButton(

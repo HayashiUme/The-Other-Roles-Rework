@@ -13,6 +13,7 @@ using TheOtherRoles.CustomGameModes;
 using TheOtherRoles.Modules;
 using TheOtherRoles.Objects;
 using TheOtherRoles.Patches;
+using TheOtherRoles.Roles.Core.Rpc;
 using TheOtherRoles.Utilities;
 using TMPro;
 using UnityEngine;
@@ -191,7 +192,11 @@ internal enum CustomRPC
     // Other functionality
     ShareTimer,
     ShareGhostInfo,
-    EventKick
+    EventKick,
+
+    // New-style RoleBase RPC (EnhancedRPC)
+    // Wire format: [ int roleId ][ uint allocId ][ ...payload ]
+    RoleRpc = 96,
 }
 
 public static class RPCProcedure
@@ -233,6 +238,9 @@ public static class RPCProcedure
         SurveillanceMinigamePatch.nightVisionOverlays = null;
         EventUtility.clearAndReload();
         MapBehaviourPatch.clearAndReload();
+
+        // Reset all new-style RoleBase roles
+        Roles.Core.RoleManager.ClearAll();
         HudManagerUpdate.CloseSummary();
     }
 
@@ -800,14 +808,45 @@ public static class RPCProcedure
     public static void reloadCooldowns()
     {
         PeaceDove.reloadMaxNum--;
-        foreach(PlayerControl p in PlayerControl.AllPlayerControls.ToArray())
+        Cleaner.cleaner.SetKillTimer(114514f);
+        /*
+        foreach(PlayerControl p in PlayerControl.AllPlayerControls)
         {
-            if(p.Data.Role.IsImpostor || p.PlayerId == Jackal.jackal.PlayerId || p.PlayerId == Thief.thief.PlayerId)
+            if (p.Data.Role.IsImpostor)
             {
-                p.SetKillTimer(PeaceDove.reloadCooldown);
-                setCustomButtonCooldowns();
+                if (Mini.mini.Data.Role.IsImpostor && !Mini.isGrownUp()) Mini.mini.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown * 2 + PeaceDove.reloadCooldown);
+                p.SetKillTimer(GameOptionsManager.Instance.currentNormalGameOptions.KillCooldown + PeaceDove.reloadCooldown);
             }
-        }
+            else if (Jackal.jackal.PlayerId == p.PlayerId || Sidekick.sidekick.PlayerId == p.PlayerId)
+            {
+                Jackal.cooldown += PeaceDove.reloadCooldown;
+                Sidekick.cooldown += PeaceDove.reloadCooldown;
+            }
+             if(PeaceDove.reloadSkills == true)
+            {
+                float pc = PeaceDove.reloadCooldown;
+                Janitor.cooldown  += pc;
+                Morphling.cooldown += pc;
+                Camouflager.cooldown += pc;
+                Vampire.cooldown += pc;
+                Jackal.createSidekickCooldown += pc;
+                Sidekick.cooldown += pc;
+                Eraser.cooldown += pc;
+                Trickster.placeBoxCooldown += pc;
+                Trickster.lightsOutCooldown += pc;
+                Cleaner.cooldown += pc;
+                Warlock.cooldown += pc;
+                Bomber.bombCooldown += pc;
+                Yoyo.markCooldown += pc;
+                Yoyo.adminCooldown += pc;
+                Fraudster.cooldown += pc;
+                Devil.blindCooldown += pc;
+            }
+            if (Helpers.shouldShowGhostInfo() &&(p.Data.Role.IsImpostor || p.PlayerId == Jackal.jackal.PlayerId || p.PlayerId == Sidekick.sidekick.PlayerId))
+            {
+                Helpers.showFlash(PeaceDove.color, 0.5f, "peacedoveReloadText".Translate());
+            }
+        }*/
     }
     public static void deputyUsedHandcuffs(byte targetId)
     {
@@ -999,10 +1038,13 @@ public static class RPCProcedure
 
         if (Devil.futureBlinded == null)
             Devil.futureBlinded = new System.Collections.Generic.List<PlayerControl>();
+        if(Devil.visionOfPlayersShouldBeChanged == null)
+            Devil.visionOfPlayersShouldBeChanged = new System.Collections.Generic.List<PlayerControl>();
 
         if (player != null) 
         {
             Devil.futureBlinded.Add(player);
+            Devil.visionOfPlayersShouldBeChanged.Add(player);
         }
     }
     public static void placeNinjaTrace(byte[] buff)
@@ -1976,6 +2018,9 @@ internal class RPCHandlerPatch
                 var kickTarget = reader.ReadByte();
                 EventUtility.handleKick(Helpers.playerById(kickSource), Helpers.playerById(kickTarget),
                     reader.ReadSingle());
+                break;
+            case (byte)CustomRPC.RoleRpc:
+                RoleRpcManager.Dispatch(reader);
                 break;
         }
     }

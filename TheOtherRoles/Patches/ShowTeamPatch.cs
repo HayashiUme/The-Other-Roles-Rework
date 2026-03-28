@@ -17,7 +17,9 @@ namespace TheOtherRoles.Patches
                 __instance.__4__this.ImpostorText.text = ModTranslation.GetString("impostorShowTeamText");
                 __instance.__4__this.ImpostorText.gameObject.SetActive(true);
                 __instance.__4__this.ImpostorText.transform.localScale = new Vector3(0.7f, 0.7f);
+
             }
+
         }
     }
 }
