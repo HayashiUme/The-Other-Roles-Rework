@@ -1,18 +1,3 @@
-// ============================================================
-//  ExampleRole — demonstrates the new RoleBase system
-//
-//  HOW TO WRITE A NEW ROLE (self-contained in one file)
-//  ─────────────────────────────────────────────────────
-//
-//  1. Inherit RoleBase, decorate with [RegisterRole].
-//  2. Declare options, RPCs, and buttons in the constructor + OnLoad().
-//  3. Override the virtual hooks you need.
-//  4. Use [EventHandler] for event-driven logic — no editing other files!
-//  5. Use NewRpc / NewRpc<T> for networked actions.
-//
-//  NOTHING else needs to change in any other .cs file.
-// ============================================================
-
 using HarmonyLib;
 using TheOtherRoles.Roles.Core;
 using TheOtherRoles.Roles.Core.Events;
